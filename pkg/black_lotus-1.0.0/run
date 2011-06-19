@@ -1,0 +1,21 @@
+#!/usr/bin/ruby1.9.1
+
+$stdout.sync = true
+
+$LOAD_PATH << File.join(File.dirname(__FILE__), *%w[src lib])
+require "black_lotus"
+
+player_number   = ARGV.first.to_i
+strategy        = ENV.fetch( "#{player_number.zero? ? 'ZERO' : 'ONE'}_STRATEGY",
+                             "offense" )
+player_strategy = if File.exist? File.join( *%W[ src lib black_lotus strategies
+                                                 #{strategy}.rb ] )
+                    BlackLotus::Strategies.const_get(
+                      strategy.gsub(/(?:\A|_)([a-z])/) { $1.upcase }
+                    )
+                  else
+                    BlackLotus::Strategies::Offense
+                  end
+
+log = player_number.zero? ? ENV["LOG"] : nil
+BlackLotus::Duel.new(player_number, player_strategy, log).run

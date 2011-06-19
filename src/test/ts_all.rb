@@ -1,0 +1,6 @@
+require "tc_constants"
+require "tc_errors"
+require "tc_slot"
+require "tc_player"
+require "tc_duel"
+require "tc_evaluator"
